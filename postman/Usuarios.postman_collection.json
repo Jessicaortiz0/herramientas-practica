@@ -1,0 +1,144 @@
+{
+  "info": {
+    "name": "API Usuarios - secuencia completa",
+    "description": "Ejecutar en orden con un servidor reci?n iniciado. Al reiniciar se restauran Jessica y Diego.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Listar usuarios",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/Usuarios"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Estado 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta esperada\", () => pm.expect(pm.response.json()).to.deep.equal([{\"id\":1,\"nombre\":\"Jessica\",\"edad\":19},{\"id\":2,\"nombre\":\"Diego\",\"edad\":20}]));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Reemplazar Jessica",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/Usuarios/1",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Jessica Ortiz\",\n  \"edad\": 20\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Estado 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta esperada\", () => pm.expect(pm.response.json()).to.deep.equal({\"id\":1,\"nombre\":\"Jessica Ortiz\",\"edad\":20}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Actualizar edad de Diego",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/Usuarios/2",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"edad\": 21\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Estado 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta esperada\", () => pm.expect(pm.response.json()).to.deep.equal({\"id\":2,\"nombre\":\"Diego\",\"edad\":21}));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Eliminar Diego",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/Usuarios/2"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Estado 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta esperada\", () => pm.expect(pm.response.text()).to.eql(\"Usuario #2 eliminado\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Comprobar resultado final",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/Usuarios"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Estado 200\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Respuesta esperada\", () => pm.expect(pm.response.json()).to.deep.equal([{\"id\":1,\"nombre\":\"Jessica Ortiz\",\"edad\":20}]));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
